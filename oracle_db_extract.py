@@ -1,12 +1,11 @@
 import oracledb
 import pandas
 import os
-# from dotenv import load_dotenv
 
 # oracledb.init_oracle_client(lib_dir="/opt/oracle/instantclient_21_10")
 
 def load_configuration():
-    # load_dotenv()
+
     username = os.getenv('DB_USERNAME')
     password = os.getenv('DB_PASSWORD')
     host = os.getenv('DB_HOST')
@@ -57,8 +56,8 @@ try:
         df = execute_query(con, query_file)
         print("Query executed successfully")
 
-        export_to_excel(df, output_file_path)
-        print("Excel file exported successfully")
+        # export_to_excel(df, output_file_path)
+        # print("Excel file exported successfully")
 
 except oracledb.DatabaseError as e:
     print("Database error:", str(e))
