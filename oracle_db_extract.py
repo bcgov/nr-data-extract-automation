@@ -28,9 +28,9 @@ def execute_query(connection, query_file):
 def export_to_excel(df, file_path):
     try:
         df.to_excel(file_path, index=False)
-        print(f"Results exported to {file_path}")
+        # print(f"Results exported to {file_path}")
     except Exception as e:
-        print(f"Error exporting results to {file_path}: {str(e)}")
+        # print(f"Error exporting results to {file_path}: {str(e)}")
 
 query_file = "rar_query.sql"
 # This is a file name for within the Docker container. The long term file name should be: f"output_{date.today().strftime('%Y-%m-%d')}_{query_file.replace('.sql', '')}.xlsx"
