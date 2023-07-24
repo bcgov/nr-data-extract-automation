@@ -1,12 +1,12 @@
 import oracledb
 import pandas
 import os
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 
 # oracledb.init_oracle_client(lib_dir="/opt/oracle/instantclient_21_10")
 
 def load_configuration():
-    load_dotenv()
+    # load_dotenv()
     username = os.getenv('DB_USERNAME')
     password = os.getenv('DB_PASSWORD')
     host = os.getenv('DB_HOST')
