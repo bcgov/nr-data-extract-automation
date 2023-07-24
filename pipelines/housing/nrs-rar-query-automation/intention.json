@@ -1,0 +1,22 @@
+{
+  "event": {
+    "provider": "EVENT_PROVIDER",
+    "reason": "Job triggered",
+    "url": "JOB_URL"
+  },
+  "actions": [
+    {
+      "action": "database-access",
+      "id": "database",
+      "provision": ["token/self"],
+      "service": {
+        "name": "nrs-rar-query-automation",
+        "project": "housing",
+        "environment": "production"
+      }
+    }
+  ],
+  "user": {
+    "id": "USER_ID"
+  }
+}
