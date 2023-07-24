@@ -25,18 +25,18 @@ def execute_query(connection, query_file):
         df = pandas.DataFrame(results, columns=columns)
         return df
 
-def export_to_excel(df, file_path):
+# def export_to_excel(df, file_path):
     try:
         df.to_excel(file_path, index=False)
-        # print(f"Results exported to {file_path}")
+        print(f"Results exported to {file_path}")
     except Exception as e:
-        # print(f"Error exporting results to {file_path}: {str(e)}")
+        print(f"Error exporting results to {file_path}: {str(e)}")
 
-query_file = "rar_query.sql"
+# query_file = "rar_query.sql"
 # This is a file name for within the Docker container. The long term file name should be: f"output_{date.today().strftime('%Y-%m-%d')}_{query_file.replace('.sql', '')}.xlsx"
-output_file_name = "rar_output.xlsx"
+# output_file_name = "rar_output.xlsx"
 # This is a path within the Docker conatiner. The long term destination should be: //objectstore.nrs.bcgov/datafoundations_prod/rar_query_output
-output_file_path = f"/extracts/{output_file_name}"
+# output_file_path = f"/extracts/{output_file_name}"
 
 try:
     username, password, host, port, database = load_configuration()
