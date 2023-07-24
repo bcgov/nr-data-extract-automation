@@ -1,0 +1,89 @@
+@Library('polaris')
+import ca.bc.gov.nrids.polaris.Podman
+import ca.bc.gov.nrids.polaris.BrokerIntention
+import ca.bc.gov.nrids.polaris.Vault
+
+def podman
+
+pipeline {
+    agent {
+        label 'podman'
+    }
+    environment {
+        EVENT_PROVIDER = "nrs-rar-query-automation"
+        TMP_VOLUME = "${UUID.randomUUID().toString()[0..7]}"
+        VAULT_ADDR = "https://vault-iit.apps.silver.devops.gov.bc.ca"
+        BROKER_URL = "https://nr-broker.apps.silver.devops.gov.bc.ca"
+        HTTP_PROXY = "http://test-forwardproxy.nrs.bcgov:23128"
+        APP_ROLE_ID = credentials('knox-vault-housing-app-role-id')
+        NR_BROKER_JWT = credentials('nr-broker-jwt')
+        AUTHFILE = "auth.json"
+    }
+    stages {
+        stage('Setup') {
+            steps {
+                sh 'rm -rf $(pwd)/extracts && mkdir $(pwd)/extracts'
+                script {
+                    commonModule = load "pipelines/common.groovy"                    
+                    intention = new BrokerIntention(readJSON(file: 'pipelines/housing/nrs-rar-query-automation/intention.json'))
+                    intention.userId = commonModule.getCauseUserId()
+                    intention.eventUrl = env.BUILD_URL
+                    intention.eventProvider = env.EVENT_PROVIDER
+                    intention.open(NR_BROKER_JWT)
+                    intention.startAction("database")
+                    def vaultAppToken = intention.provisionToken("database", APP_ROLE_ID)
+                    def vault = new Vault(vaultAppToken)
+                    def dbCreds = vault.read('apps/data/prod/housing/nrs-rar-query-automation')
+                    env.DB_USERNAME = dbCreds['DB_USERNAME']
+                    env.DB_PASSWORD = dbCreds['DB_PASSWORD']
+                    env.DB_HOST = dbCreds['DB_HOST']
+                    env.DB_PORT = dbCreds['DB_PORT']
+                    env.DATABASE = dbCreds['DATABASE']
+                    def registryCreds = vault.read('apps/data/prod/housing/nrs-rar-query-automation/artifactory')
+                    env.REGISTRY_USERNAME = registryCreds['username']
+                    env.REGISTRY_PASSWORD = registryCreds['password']
+                    vault.revokeToken()
+                }
+            }
+        }
+        stage('Run rar query automation') {
+            steps {
+                script {
+                    podman = new Podman(this, null, "artifacts.developer.gov.bc.ca/cc20-gen-docker-local")
+                    podman.login(authfile: "${env.AUTHFILE}", options: "-u ${env.REGISTRY_USERNAME} -p ${env.REGISTRY_PASSWORD}")
+                    podman.run("nrs-rar-query-automation:latest",
+                        authfile: "${env.AUTHFILE}",
+                        options: "--workdir /app \
+                            -v \$(pwd):/app \
+                            -v \$(pwd)/extracts:/extracts \
+                            -e 'DB_*' \
+                            -e 'DATABASE*'",
+                        command: "python3 ./oracle_db_extract.py")
+                    podman.logout(authfile: "${env.AUTHFILE}")
+                    intention.endAction("database")
+                }
+            }
+        }
+    }
+    post {
+        success {
+            script {
+                intention.close(true)
+            }
+        }
+        unstable {
+            script {
+                if (intention) {
+                    intention.close(false)
+                }
+            }
+        }
+        failure {
+            script {
+                if (intention) {
+                    intention.close(false)
+                }
+            }
+        }
+    }
+}
