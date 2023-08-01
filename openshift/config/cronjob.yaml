@@ -1,0 +1,118 @@
+kind: CronJob
+apiVersion: batch/v1
+metadata:
+  name: nrs-query-automation-cron
+  namespace: c2b678-prod
+  uid: c02f88d0-e5e9-46c0-b213-9ece81c862f8
+  resourceVersion: '7271855381'
+  generation: 10
+  creationTimestamp: '2023-07-29T00:51:25Z'
+  managedFields:
+    - manager: kubectl-client-side-apply
+      operation: Update
+      apiVersion: batch/v1
+      time: '2023-07-29T00:51:25Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:spec':
+          'f:concurrencyPolicy': {}
+          'f:failedJobsHistoryLimit': {}
+          'f:jobTemplate':
+            'f:spec':
+              'f:template':
+                'f:spec':
+                  'f:containers':
+                    'k:{"name":"nrs-query-automation"}':
+                      .: {}
+                      'f:env':
+                        .: {}
+                        'k:{"name":"apikey"}':
+                          .: {}
+                          'f:name': {}
+                          'f:valueFrom':
+                            .: {}
+                            'f:secretKeyRef': {}
+                        'k:{"name":"objkey"}':
+                          .: {}
+                          'f:name': {}
+                          'f:valueFrom':
+                            .: {}
+                            'f:secretKeyRef': {}
+                      'f:imagePullPolicy': {}
+                      'f:name': {}
+                      'f:resources': {}
+                      'f:terminationMessagePath': {}
+                      'f:terminationMessagePolicy': {}
+                  'f:dnsPolicy': {}
+                  'f:restartPolicy': {}
+                  'f:schedulerName': {}
+                  'f:securityContext': {}
+                  'f:terminationGracePeriodSeconds': {}
+          'f:successfulJobsHistoryLimit': {}
+          'f:suspend': {}
+    - manager: kube-controller-manager
+      operation: Update
+      apiVersion: batch/v1
+      time: '2023-08-01T20:39:24Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:status':
+          'f:lastScheduleTime': {}
+          'f:lastSuccessfulTime': {}
+      subresource: status
+    - manager: Mozilla
+      operation: Update
+      apiVersion: batch/v1
+      time: '2023-08-01T21:35:34Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:spec':
+          'f:jobTemplate':
+            'f:spec':
+              'f:template':
+                'f:spec':
+                  'f:containers':
+                    'k:{"name":"nrs-query-automation"}':
+                      'f:image': {}
+          'f:schedule': {}
+spec:
+  schedule: 0 4 * * *
+  concurrencyPolicy: Replace
+  suspend: false
+  jobTemplate:
+    metadata:
+      creationTimestamp: null
+    spec:
+      template:
+        metadata:
+          creationTimestamp: null
+        spec:
+          containers:
+            - name: nrs-query-automation
+              image: >-
+                image-registry.openshift-image-registry.svc:5000/c2b678-prod/nrs-query-automation@sha256:bb8370cb1146e5e38788c5dca76f145ceee93484b295006a1cc895053fcd4b64
+              env:
+                - name: apikey
+                  valueFrom:
+                    secretKeyRef:
+                      name: nrs-query-automation
+                      key: apikey
+                - name: objkey
+                  valueFrom:
+                    secretKeyRef:
+                      name: nrs-query-automation
+                      key: objkey
+              resources: {}
+              terminationMessagePath: /dev/termination-log
+              terminationMessagePolicy: File
+              imagePullPolicy: IfNotPresent
+          restartPolicy: OnFailure
+          terminationGracePeriodSeconds: 600
+          dnsPolicy: ClusterFirst
+          securityContext: {}
+          schedulerName: default-scheduler
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+status:
+  lastScheduleTime: '2023-08-01T20:39:00Z'
+  lastSuccessfulTime: '2023-08-01T20:39:24Z'
