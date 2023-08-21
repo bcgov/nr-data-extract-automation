@@ -1,21 +1,27 @@
 FROM python:3.11.4-slim-buster
 
-WORKDIR /opt/oracle
-RUN apt-get update && apt-get install -y libaio1 wget unzip \
-    && wget https://download.oracle.com/otn_software/linux/instantclient/instantclient-basiclite-linuxx64.zip \
-    && unzip instantclient-basiclite-linuxx64.zip \
-    && rm -f instantclient-basiclite-linuxx64.zip \
-    && cd /opt/oracle/instantclient* \
-    && rm -f *jdbc* *occi* *mysql* *README *jar uidrvci genezi adrci \
-    && echo /opt/oracle/instantclient* > /etc/ld.so.conf.d/oracle-instantclient.conf \
-    && ldconfig
+WORKDIR    /opt/oracle
+RUN        apt-get update && apt-get install -y libaio1 wget unzip \
+            && wget https://download.oracle.com/otn_software/linux/instantclient/instantclient-basiclite-linuxx64.zip \
+            && unzip instantclient-basiclite-linuxx64.zip \
+            && rm -f instantclient-basiclite-linuxx64.zip \
+            && cd /opt/oracle/instantclient* \
+            && rm -f *jdbc* *occi* *mysql* *README *jar uidrvci genezi adrci \
+            && echo /opt/oracle/instantclient* > /etc/ld.so.conf.d/oracle-instantclient.conf \
+            && ldconfig
 
-WORKDIR /app
+WORKDIR    /app
+
+ADD main.py .
 
 COPY requirements.txt requirements.txt
 
 RUN pip3 install -r requirements.txt
 
+COPY rar_query.sql rar_query.sql 
+
 RUN mkdir /extracts
 
-CMD ["python3", "--help"]
+CMD ["python3", "./main.py"]
+
+

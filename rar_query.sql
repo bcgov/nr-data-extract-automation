@@ -1,3 +1,4 @@
+-- RAR = riparian areas --
 SELECT rda.DEV_ASSESSMENT_ID file_id
      , rda.DEV_NATURE_CODE 
      , rda.ADDRESS_ID 
