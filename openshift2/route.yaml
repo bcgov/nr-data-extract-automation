@@ -1,0 +1,64 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: nrs-query-automation
+  namespace: c2b678-prod
+  uid: 43934c6f-16f2-4f1c-a100-50bf8ce7dd56
+  resourceVersion: '7233781924'
+  creationTimestamp: '2023-07-28T06:13:11Z'
+  labels:
+    app: nrs-query-automation
+    app.kubernetes.io/component: nrs-query-automation
+    app.kubernetes.io/instance: nrs-query-automation
+  annotations:
+    openshift.io/host.generated: 'true'
+  managedFields:
+    - manager: kubectl-expose
+      operation: Update
+      apiVersion: route.openshift.io/v1
+      time: '2023-07-28T06:13:11Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:metadata':
+          'f:labels':
+            .: {}
+            'f:app': {}
+            'f:app.kubernetes.io/component': {}
+            'f:app.kubernetes.io/instance': {}
+        'f:spec':
+          'f:port':
+            .: {}
+            'f:targetPort': {}
+          'f:to':
+            'f:kind': {}
+            'f:name': {}
+            'f:weight': {}
+          'f:wildcardPolicy': {}
+    - manager: openshift-router
+      operation: Update
+      apiVersion: route.openshift.io/v1
+      time: '2023-07-28T06:13:11Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:status':
+          'f:ingress': {}
+      subresource: status
+spec:
+  host: nrs-query-automation-c2b678-prod.apps.silver.devops.gov.bc.ca
+  to:
+    kind: Service
+    name: nrs-query-automation
+    weight: 100
+  port:
+    targetPort: 4001-tcp
+  wildcardPolicy: None
+status:
+  ingress:
+    - host: nrs-query-automation-c2b678-prod.apps.silver.devops.gov.bc.ca
+      routerName: default
+      conditions:
+        - type: Admitted
+          status: 'True'
+          lastTransitionTime: '2023-07-28T06:13:11Z'
+      wildcardPolicy: None
+      routerCanonicalHostname: router-default.apps.silver.devops.gov.bc.ca
