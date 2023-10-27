@@ -30,14 +30,12 @@ spec:
                     secretKeyRef:
                       name: nrs-query-automation
                       key: objkey
-              resources: {}
               terminationMessagePath: /dev/termination-log
               terminationMessagePolicy: File
               imagePullPolicy: IfNotPresent
           restartPolicy: OnFailure
           terminationGracePeriodSeconds: 600
           dnsPolicy: ClusterFirst
-          securityContext: {}
           schedulerName: default-scheduler
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 1
