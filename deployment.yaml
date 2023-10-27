@@ -1,14 +1,7 @@
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  annotations:
-    deployment.kubernetes.io/revision: '5'
-    image.openshift.io/triggers: >-
-      [{"from":{"kind":"ImageStreamTag","name":"nrs-query-automation:latest","namespace":"c2b678-prod"},"fieldPath":"spec.template.spec.containers[?(@.name==\"nrs-query-automation\")].image","pause":"true"}]
-    openshift.io/generated-by: OpenShiftNewApp
-  resourceVersion: '7240363789'
   name: nrs-query-automation
-  uid: 99ac3274-08e7-421e-88db-8255a6203113
   namespace: c2b678-prod
   labels:
     app: nrs-query-automation
@@ -55,20 +48,3 @@ spec:
     type: Recreate
   revisionHistoryLimit: 10
   progressDeadlineSeconds: 600
-status:
-  observedGeneration: 6
-  conditions:
-    - type: Progressing
-      status: 'True'
-      lastUpdateTime: '2023-07-28T23:37:29Z'
-      lastTransitionTime: '2023-07-28T23:30:29Z'
-      reason: NewReplicaSetAvailable
-      message: >-
-        ReplicaSet "nrs-query-automation-744c6ddf5c" has successfully
-        progressed.
-    - type: Available
-      status: 'True'
-      lastUpdateTime: '2023-07-28T23:56:41Z'
-      lastTransitionTime: '2023-07-28T23:56:41Z'
-      reason: MinimumReplicasAvailable
-      message: Deployment has minimum availability.
