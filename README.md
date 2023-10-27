@@ -10,17 +10,11 @@ Automate the process of executing daily database queries, generating tabular rep
 * Docker 
 * WSL2
 
-### Step 1 - Build and test Docker image locally
+### Step 1 - Build Docker image locally
 ```sh
-docker build -t nrs-query-automation .
-```
-```sh
-docker run --env-file=.env --name query_container nrs-query-automation
+docker build -t nrs-query-automation:<tag> .
 ```
 ### Step 2 - Log in to OpenShift and navigate to project
-```sh
-oc login --token=[your-token] --server=https://api.silver.devops.gov.bc.ca:6443
-```
 ```sh
 oc project c2b678-prod
 ```
@@ -29,25 +23,14 @@ oc project c2b678-prod
 
 ### Step 4 - Upload the Docker image 
 ```sh
-oc apply -f imagestream.yaml
+docker push image-registry.apps.emerald.devops.gov.bc.ca/c2b678-prod/nrs-query-automation:<tag>
 ```
-### Step 5 - Create OpenShift secrets 
-```sh
-oc create -f secrets.yaml
-```
-### Step 6 - Build container with required resources, secrets, env variables, etc
+### Step 5 - Build container with required resources, secrets, env variables, etc
 ```sh
 oc apply -f deployment.yaml
 ```
-### Step 7 - Confirm the pod works
+### Step 6 - Schedule cron job
 ```sh
-oc describe pod nrs-query-automation-[pod-name]
-```
-```sh
-oc logs nrs-query-automation-[pod-name]
-```
-### Step 8 - Schedule cron job
-```sh
-oc apply -f cronjob.yaml --validate=false
+oc apply -f cronjob.yaml 
 ```
 
