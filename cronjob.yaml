@@ -41,6 +41,3 @@ spec:
           schedulerName: default-scheduler
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 1
-status:
-  lastScheduleTime: '2023-08-01T20:39:00Z'
-  lastSuccessfulTime: '2023-08-01T20:39:24Z'
